@@ -44,6 +44,7 @@ define('FractalRunner', [], function() {
     controlToggler.onclick = toggleControlsForm;
     exportToPngBtn.onclick = function() {
       window.open(exportToPNG(), '_newtab');
+      return false;
     };
 
     controlsForm.onsubmit = function() {
@@ -153,7 +154,6 @@ define('FractalRunner', [], function() {
       controlToggler.innerHTML = '+controls';
       controlsForm.style.display = '';
     }
-
     return false;
   }
 
