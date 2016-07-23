@@ -153,6 +153,8 @@ define('FractalRunner', [], function() {
       controlToggler.innerHTML = '+controls';
       controlsForm.style.display = '';
     }
+
+    return false;
   }
 
   function exportToPNG() {
