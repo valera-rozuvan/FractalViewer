@@ -1,12 +1,17 @@
-define('FractalRunner', [], function() {
+define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog, $) {
   'use strict';
 
   var fractalViewer;
   var mouseX;
   var mouseY;
   var dragging = false;
-  var trackParameters;
   var timeoutId;
+
+  var DEFAULTS = {
+    maxI: 50,
+    colorCycle: 10,
+    colorPhase: 0
+  };
 
   function getHashVariable(variable) {
     var query = window.location.hash.substring(1);
@@ -29,28 +34,18 @@ define('FractalRunner', [], function() {
       parseFloat(getHashVariable('viewWidth'))
     );
 
-    var iterControl = document.getElementById('iterControl');
-    var updateButton = document.getElementById('updateFractalViewer');
-    var controlToggler = document.getElementById('controlToggler');
-    var exportToPngBtn = document.getElementById('exportToPngBtn');
-    var controlsForm = document.getElementById('controlsForm');
     var canvas = document.getElementById('fractalViewerCanvas');
 
-    window.onresize = function(e) {
+    $(window).on('resize', function(e) {
       fractalViewer.reshape();
       scheduleUpdateHash();
-    };
+    });
 
-    controlToggler.onclick = toggleControlsForm;
-    exportToPngBtn.onclick = function() {
+    $('#controlToggler').on('click', toggleControlsForm);
+    $('#exportToPngBtn').on('click', function() {
       window.open(exportToPNG(), '_newtab');
       return false;
-    };
-
-    controlsForm.onsubmit = function() {
-      updateFractalViewer();
-      return false;
-    };
+    });
 
     canvas.onmousedown = function(e) {
       mouseX = e.pageX;
@@ -86,17 +81,19 @@ define('FractalRunner', [], function() {
         canvas.onmousewheel(e);
       }, true);
     }
+
     setParametersFromHash();
   }
 
-  function updateFractalViewer() {
-    var maxI = parseInt(document.getElementById('iterControl').value);
+  function updateFractalViewer(maxI, colorCycle, colorPhase) {
     fractalViewer.maxI = maxI;
-    fractalViewer.colorCycle = parseInt(document.getElementById('cycleColorsPeriod').value);
-    fractalViewer.colorPhase = parseFloat(document.getElementById('cycleColorsPhase').value);
-    trackParameters = document.getElementById('trackParameters').checked;
+    fractalViewer.colorCycle = colorCycle;
+    fractalViewer.colorPhase = colorPhase;
+
     updateHash();
+
     fractalViewer.reshape();
+
     return false;
   }
 
@@ -106,16 +103,13 @@ define('FractalRunner', [], function() {
   }
 
   function updateHash() {
-    if (trackParameters) {
-      window.location.hash = '' +
-        '#maxI=' + fractalViewer.maxI +
-        '$centerX=' + fractalViewer.centerX +
-        '$centerY=' + fractalViewer.centerY +
-        '$viewWidth=' + fractalViewer.viewWidth +
-        '$cyclePeriod=' + fractalViewer.colorCycle +
-        '$cyclePhase=' + fractalViewer.colorPhase +
-        '$trackParameters=' + trackParameters;
-    }
+    window.location.hash = '' +
+      '#maxI=' + fractalViewer.maxI +
+      '$centerX=' + fractalViewer.centerX +
+      '$centerY=' + fractalViewer.centerY +
+      '$viewWidth=' + fractalViewer.viewWidth +
+      '$cyclePeriod=' + fractalViewer.colorCycle +
+      '$cyclePhase=' + fractalViewer.colorPhase;
   }
 
   function setParametersFromHash() {
@@ -125,31 +119,72 @@ define('FractalRunner', [], function() {
     var viewWidth = getHashVariable('viewWidth');
     var cyclePeriod = getHashVariable('cyclePeriod');
     var cyclePhase = getHashVariable('cyclePhase');
-    var trackParameters = getHashVariable('trackParameters');
 
-    if (maxI) {
-      document.getElementById('iterControl').value = parseInt(maxI);
+    if (centerX) {
+      fractalViewer.centerX = parseFloat(centerX);
     }
-    if (centerX) {fractalViewer.centerX = parseFloat(centerX);}
-    if (centerY) { fractalViewer.centerY = parseFloat(centerY); }
-    if (viewWidth) { fractalViewer.viewWidth = parseFloat(viewWidth);}
-    if (cyclePeriod) {document.getElementById('cycleColorsPeriod').value = cyclePeriod;}
-    if (cyclePhase) { document.getElementById('cycleColorsPhase').value = cyclePhase;}
-    if (trackParameters) {document.getElementById('trackParameters').checked = trackParameters;}
+    if (centerY) {
+      fractalViewer.centerY = parseFloat(centerY);
+    }
+    if (viewWidth) {
+      fractalViewer.viewWidth = parseFloat(viewWidth);
+    }
 
-    updateFractalViewer();
+    updateFractalViewer(
+      parseInt(maxI, 10) || DEFAULTS.maxI,
+      parseInt(cyclePeriod, 10) || DEFAULTS.colorCycle,
+      parseFloat(cyclePhase) || DEFAULTS.colorPhase
+    );
   }
 
-  function toggleControlsForm() {
-    var controlsForm = document.getElementById('controlsForm');
-    var controlToggler = document.getElementById('controlToggler');
-    if (!controlsForm.style.display) {
-      controlToggler.innerHTML = '-controls';
-      controlsForm.style.display = 'block';
-    }else {
-      controlToggler.innerHTML = '+controls';
-      controlsForm.style.display = '';
-    }
+  function toggleControlsForm(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var controlsForm = $('#controlsForm').clone(false);
+
+    controlsForm.css({
+      display: 'block'
+    });
+
+    controlsForm.find('#iterControl').val(fractalViewer.maxI);
+    controlsForm.find('#cycleColorsPeriod').val(fractalViewer.colorCycle);
+    controlsForm.find('#cycleColorsPhase').val(fractalViewer.colorPhase);
+
+    controlsForm.find('#updateFractalViewer').on('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var maxI = parseInt(controlsForm.find('#iterControl').val(), 10);
+      var colorCycle = parseInt(controlsForm.find('#cycleColorsPeriod').val(), 10);
+      var colorPhase = parseFloat(controlsForm.find('#cycleColorsPhase').val(), 10);
+
+      updateFractalViewer(maxI, colorCycle, colorPhase);
+
+      return false;
+    });
+
+    controlsForm.on('submit', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      return false;
+    });
+
+    BootstrapDialog.show({
+      title: 'Options',
+      message: controlsForm,
+      draggable: true,
+      closeByBackdrop: false,
+      closeByKeyboard: false,
+      buttons: [{
+        label: 'Close',
+        action: function(dialogRef) {
+          dialogRef.close();
+        }
+      }]
+    });
+
     return false;
   }
 

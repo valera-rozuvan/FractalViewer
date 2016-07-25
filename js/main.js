@@ -5,11 +5,21 @@
     baseUrl: 'js',
     paths: {
       jquery: 'vendor/jquery/jquery.min',
-      complex: 'vendor/complex-js/complex.min'
+      complex: 'vendor/complex-js/complex.min',
+      bootstrap: 'vendor/bootstrap/bootstrap.min',
+      'bootstrap-dialog': 'vendor/bootstrap3-dialog/bootstrap-dialog.min'
+    },
+    shim: {
+      'bootstrap': {
+        deps: ['jquery']
+      },
+      'bootstrap-dialog': {
+        deps: ['jquery', 'bootstrap']
+      }
     }
   });
 
-  require(['jquery'], function($) {
+  require(['jquery', 'bootstrap', 'bootstrap-dialog'], function($) {
     $.noConflict();
     $(document).ready(onDomReady);
   });
