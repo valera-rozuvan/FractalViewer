@@ -4,7 +4,8 @@
   require.config({
     baseUrl: 'js',
     paths: {
-      jquery: 'vendor/jquery/jquery.min'
+      jquery: 'vendor/jquery/jquery.min',
+      complex: 'vendor/complex-js/complex.min'
     }
   });
 

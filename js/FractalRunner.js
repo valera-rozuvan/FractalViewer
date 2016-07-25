@@ -94,7 +94,6 @@ define('FractalRunner', [], function() {
     fractalViewer.maxI = maxI;
     fractalViewer.colorCycle = parseInt(document.getElementById('cycleColorsPeriod').value);
     fractalViewer.colorPhase = parseFloat(document.getElementById('cycleColorsPhase').value);
-    fractalViewer.smoothColors = document.getElementById('smoothColors').checked;
     trackParameters = document.getElementById('trackParameters').checked;
     updateHash();
     fractalViewer.reshape();
@@ -115,7 +114,6 @@ define('FractalRunner', [], function() {
         '$viewWidth=' + fractalViewer.viewWidth +
         '$cyclePeriod=' + fractalViewer.colorCycle +
         '$cyclePhase=' + fractalViewer.colorPhase +
-        '$smoothColors=' + fractalViewer.smoothColors +
         '$trackParameters=' + trackParameters;
     }
   }
@@ -127,7 +125,6 @@ define('FractalRunner', [], function() {
     var viewWidth = getHashVariable('viewWidth');
     var cyclePeriod = getHashVariable('cyclePeriod');
     var cyclePhase = getHashVariable('cyclePhase');
-    var smoothColors = getHashVariable('smoothColors');
     var trackParameters = getHashVariable('trackParameters');
 
     if (maxI) {
@@ -138,7 +135,6 @@ define('FractalRunner', [], function() {
     if (viewWidth) { fractalViewer.viewWidth = parseFloat(viewWidth);}
     if (cyclePeriod) {document.getElementById('cycleColorsPeriod').value = cyclePeriod;}
     if (cyclePhase) { document.getElementById('cycleColorsPhase').value = cyclePhase;}
-    if (smoothColors) { document.getElementById('smoothColors').checked = smoothColors;}
     if (trackParameters) {document.getElementById('trackParameters').checked = trackParameters;}
 
     updateFractalViewer();

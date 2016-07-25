@@ -1,4 +1,4 @@
-define('FractalViewer', [], function() {
+define('FractalViewer', ['complex'], function(Complex) {
   'use strict';
 
   function FractalViewer(maxI, centerX, centerY, viewWidth) {
@@ -13,7 +13,6 @@ define('FractalViewer', [], function() {
     this.maxI = maxI || 30;
     this.colorCycle = 10;
     this.colorPhase = 0;
-    this.smoothColors = false;
 
     this.canvas = document.getElementById('fractalViewerCanvas');
     this.ctx = this.canvas.getContext('2d');
@@ -49,30 +48,16 @@ define('FractalViewer', [], function() {
   };
 
   FractalViewer.prototype.calcEscapeNum = function(maxI, x0, y0) {
-    //check if it's in the cardiod:
-    var q = (x0 - 0.25) * (x0 - 0.25) + y0 * y0;
-    if (q * (q + (x0 - 0.25)) < 0.25 * y0 * y0) {
-      return maxI;
-    }
-    //check if it's in the period-2 bulb
-    if ((x0 + 1) * (x0 + 1) + y0 * y0 < 1 / 16) {
-      return maxI;
-    }
-    var x = 0;
-    var y = 0;
-
     var i = 0;
+    var c = Complex(x0, y0);
+    var z = Complex(0, 0);
 
-    var xTemp;
-
-    while (x * x + y * y <= 4 && i < maxI) {
-      xTemp = x * x - y * y + x0;
-      y = 2 * x * y + y0;
-
-      x = xTemp;
+    while (z.abs() <= 8.0 && i < maxI) {
+      z = z.rPow(2.0)['+'](c);
 
       i += 1;
     }
+
     return i;
   };
 
@@ -129,93 +114,9 @@ define('FractalViewer', [], function() {
   FractalViewer.prototype.xPixelToReal = function(pxX) {
     return this.viewWidth * (pxX / this.width - 0.5) + this.centerX;
   };
+
   FractalViewer.prototype.yPixelToReal = function(pxY) {
     return this.centerY - this.viewHeight * (pxY / this.height - 0.5);
-  };
-
-  FractalViewer.prototype.draw = function() {
-    var baseTime = (new Date()).getTime();
-    var ctx = this.ctx;
-    var imageData = this.ctx.createImageData(this.width, this.height);
-    var pixelArray = imageData.data;
-
-    console.log((new Date()).getTime() - baseTime);
-
-    var width = this.width;
-    var height = this.height;
-    var maxI = this.maxI;
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, width, height);
-    for (var pxX = 0; pxX < width; pxX += 1) {
-      for (var pxY = 0; pxY < height; pxY += 1) {
-        var i = this.calcEscapeNum(maxI, this.xPixelToReal(pxX), this.yPixelToReal(pxY));
-        var paIndex = (pxY * width + pxX) * 4;
-        this.hueToRGB(this.escapeToHue(i), pixelArray, paIndex);
-      }
-    }
-    console.log((new Date()).getTime() - baseTime);
-    this.ctx.putImageData(imageData, 0, 0);
-    console.log((new Date()).getTime() - baseTime);
-  };
-
-  FractalViewer.prototype.drawSmooth = function(pxY) {
-    if (this.pendingDraw) {
-      clearTimeout(this.pendingDraw);
-      this.pendingDraw = null;
-    }
-    var BAILOUT_R = Math.pow(10, 10);
-    var BAILOUT_R_SQR = BAILOUT_R * BAILOUT_R;
-    var LOG_BAILOUT_R = Math.log(BAILOUT_R);
-
-    var imageData = this.ctx.createImageData(this.width, 1);
-    var pixelArray = imageData.data;
-
-    pxY = pxY || 0;
-
-    var width = this.width;
-    var height = this.height;
-    var maxI = this.maxI;
-
-    var y0 = this.yPixelToReal(pxY);
-
-    var sqrt = Math.sqrt;
-    var log = Math.log;
-    var l2 = log(2);
-
-    for (var pxX = 0; pxX < this.width; pxX += 1) {
-      var x0 = this.xPixelToReal(pxX);
-
-      var x = 0;
-      var y = 0;
-      var x2 = 0;
-      var y2 = 0;
-      var i = 0;
-      var q = (x0 - 0.25) * (x0 - 0.25) + y0 * y0;
-      var doEval = !((q * (q + (x0 - 0.25)) < 0.25 * y0 * y0) || ((x0 + 1) * (x0 + 1) + y0 * y0 < 1 / 16));
-      if (doEval) {
-        while (i < maxI && x2 + y2 < BAILOUT_R_SQR) {
-          y = 2 * x * y + y0;
-          x = x2 - y2 + x0;
-          x2 = x * x;
-          y2 = y * y;
-          i += 1;
-        }
-        i += 1;
-      }
-      var e;
-      if (x2 + y2 < 4) {
-        e = maxI;
-      }else {
-        e = (i - log(log(sqrt(x2 + y2)) / l2) / l2);
-      }
-      var h = this.escapeToHue(e);
-      this.hueToRGB(h, pixelArray, (pxX) * 4);
-    }
-    this.ctx.putImageData(imageData, 0, pxY);
-    if (pxY < height) {
-      var me = this;
-      this.pendingDraw = setTimeout(function() {me.drawSmooth(pxY + 1);});
-    }
   };
 
   FractalViewer.prototype.drawSuccessive = function(chunkSizeOpt, countsArrayOpt, pxYStartOpt) {
@@ -314,8 +215,6 @@ define('FractalViewer', [], function() {
     var me = this;
     if (pxYStop < height) {
       this.pendingDraw = setTimeout(function() {me.drawSuccessive(chunkSize, countsArray, pxYStop);});
-    }else if (this.smoothColors && chunkSize / CHUNK_ZOOM === 1) {
-      this.pendingDraw = setTimeout(function() {me.drawSmooth();});
     }else if (chunkSize > 1) {
       this.pendingDraw = setTimeout(function() {me.drawSuccessive(chunkSize / CHUNK_ZOOM, countsArray);});
     }
