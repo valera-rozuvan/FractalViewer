@@ -8,9 +8,13 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
   var timeoutId;
 
   var DEFAULTS = {
+    centerX: -0.5,
+    centerY: 0,
+    viewWidth: 5.2,
     maxI: 50,
     colorCycle: 10,
-    colorPhase: 0
+    colorPhase: 0,
+    fractalType: 'mandelbrot'
   };
 
   function getHashVariable(variable) {
@@ -25,13 +29,38 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
     return false;
   }
 
+  function updateCtrlBtnPlacement() {
+    var xDisp = 5.0;
+    var yDisp = 5.0;
+
+    $('#controlToggler').css({
+      top: Math.round(yDisp) + 'px',
+      left: Math.round(xDisp) + 'px',
+      visibility: 'visible'
+    });
+
+    $('#fractalTypesBtn').css({
+      top: Math.round(yDisp) + 'px',
+      left: Math.round(xDisp * 2.0 + $('#controlToggler').outerWidth()) + 'px',
+      visibility: 'visible'
+    });
+
+    $('#exportToPngBtn').css({
+      top: Math.round(yDisp) + 'px',
+      left: Math.round(xDisp * 3.0 + $('#controlToggler').outerWidth() + $('#fractalTypesBtn').outerWidth()) + 'px',
+      visibility: 'visible'
+    });
+  }
+
   function init(FractalViewer) {
     fractalViewer = new FractalViewer(
       parseInt(getHashVariable('maxI')),
 
       parseFloat(getHashVariable('centerX')),
       parseFloat(getHashVariable('centerY')),
-      parseFloat(getHashVariable('viewWidth'))
+      parseFloat(getHashVariable('viewWidth')),
+
+      getHashVariable('fractalType')
     );
 
     var canvas = document.getElementById('fractalViewerCanvas');
@@ -42,6 +71,7 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
     });
 
     $('#controlToggler').on('click', toggleControlsForm);
+    $('#fractalTypesBtn').on('click', toggleFractalTypesDialog);
     $('#exportToPngBtn').on('click', function() {
       window.open(exportToPNG(), '_newtab');
       return false;
@@ -82,6 +112,8 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
       }, true);
     }
 
+    updateCtrlBtnPlacement();
+
     setParametersFromHash();
   }
 
@@ -109,7 +141,8 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
       '$centerY=' + fractalViewer.centerY +
       '$viewWidth=' + fractalViewer.viewWidth +
       '$cyclePeriod=' + fractalViewer.colorCycle +
-      '$cyclePhase=' + fractalViewer.colorPhase;
+      '$cyclePhase=' + fractalViewer.colorPhase +
+      '$fractalType=' + fractalViewer.currentFractalType;
   }
 
   function setParametersFromHash() {
@@ -119,15 +152,30 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
     var viewWidth = getHashVariable('viewWidth');
     var cyclePeriod = getHashVariable('cyclePeriod');
     var cyclePhase = getHashVariable('cyclePhase');
+    var fractalType = getHashVariable('fractalType');
 
     if (centerX) {
       fractalViewer.centerX = parseFloat(centerX);
+    } else {
+      fractalViewer.centerX = DEFAULTS.centerX;
     }
+
     if (centerY) {
       fractalViewer.centerY = parseFloat(centerY);
+    } else {
+      fractalViewer.centerY = DEFAULTS.centerY;
     }
+
     if (viewWidth) {
       fractalViewer.viewWidth = parseFloat(viewWidth);
+    } else {
+      fractalViewer.viewWidth = DEFAULTS.viewWidth;
+    }
+
+    if (fractalType) {
+      fractalViewer.currentFractalType = fractalType;
+    } else {
+      fractalViewer.currentFractalType = DEFAULTS.fractalType;
     }
 
     updateFractalViewer(
@@ -172,8 +220,77 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
     });
 
     BootstrapDialog.show({
-      title: 'Options',
+      title: 'Controls',
+      cssClass: 'controls-form-dialog',
       message: controlsForm,
+      draggable: true,
+      closeByBackdrop: false,
+      closeByKeyboard: false,
+      buttons: [{
+        label: 'Close',
+        action: function(dialogRef) {
+          dialogRef.close();
+        }
+      }]
+    });
+
+    return false;
+  }
+
+  function toggleFractalTypesDialog(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var fractalTypesEl = $('#fractalTypes').clone(false);
+
+    fractalTypesEl.css({
+      display: 'block'
+    });
+
+    fractalTypesEl.find('#ft-mandelbrot').on('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var maxI = 50;
+      var colorCycle = 10;
+      var colorPhase = 0;
+      var fractalType = 'mandelbrot';
+
+      fractalViewer.centerX = -0.5;
+      fractalViewer.centerY = 0.0;
+      fractalViewer.viewWidth = 5.2;
+
+      fractalViewer.currentFractalType = fractalType;
+
+      updateFractalViewer(maxI, colorCycle, colorPhase);
+
+      return false;
+    });
+
+    fractalTypesEl.find('#ft-rcf').on('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var maxI = 50;
+      var colorCycle = 15;
+      var colorPhase = 0.35;
+      var fractalType = 'rozuvan-circles-fractal';
+
+      fractalViewer.centerX = 4.366526931088112;
+      fractalViewer.centerY = -0.62812161248458;
+      fractalViewer.viewWidth = 372.4972899876641;
+
+      fractalViewer.currentFractalType = fractalType;
+
+      updateFractalViewer(maxI, colorCycle, colorPhase);
+
+      return false;
+    });
+
+    BootstrapDialog.show({
+      title: 'Fractal Type',
+      cssClass: 'fractal-types-dialog',
+      message: fractalTypesEl,
       draggable: true,
       closeByBackdrop: false,
       closeByKeyboard: false,

@@ -1,9 +1,24 @@
-define('FractalViewer', ['complex'], function(Complex) {
+define(
+  'FractalViewer',
+  [
+    'complex',
+    'fractal-types/mandelbrot',
+    'fractal-types/rcf'
+  ],
+  function(Complex, ftM, ftRcf) {
+
   'use strict';
 
-  function FractalViewer(maxI, centerX, centerY, viewWidth) {
+  function FractalViewer(maxI, centerX, centerY, viewWidth, fractalType) {
     this.width = undefined;
     this.height = undefined;
+
+    this.currentFractalType = fractalType || 'mandelbrot';
+    // this.currentFractalType = fractalType || 'rozuvan-circles-fractal';
+    this.fractalTypes = {
+      mandelbrot: ftM,
+      'rozuvan-circles-fractal': ftRcf
+    };
 
     this.centerX = centerX || -0.5;
     this.centerY = centerY || 0;
@@ -45,20 +60,6 @@ define('FractalViewer', ['complex'], function(Complex) {
   FractalViewer.prototype.zoom = function(amount) {
     this.viewWidth *= amount;
     this.reshape();
-  };
-
-  FractalViewer.prototype.calcEscapeNum = function(maxI, x0, y0) {
-    var i = 0;
-    var c = Complex(x0, y0);
-    var z = Complex(0, 0);
-
-    while (z.abs() <= 8.0 && i < maxI) {
-      z = z.rPow(2.0)['+'](c);
-
-      i += 1;
-    }
-
-    return i;
   };
 
   FractalViewer.prototype.escapeToHue = function(i) {
@@ -195,7 +196,10 @@ define('FractalViewer', ['complex'], function(Complex) {
 
         var i;
         if (doEvaluate) {
-          i = this.calcEscapeNum(maxI, this.xPixelToReal(pxX), this.yPixelToReal(pxY));
+          // i = this.calcEscapeNum(maxI, this.xPixelToReal(pxX), this.yPixelToReal(pxY));
+          i = this.fractalTypes[this.currentFractalType](
+            maxI, this.xPixelToReal(pxX), this.yPixelToReal(pxY)
+          );
         } else {
           i = count(parentX, parentY);
         }
