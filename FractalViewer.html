@@ -25,6 +25,10 @@
             Controls
         </button>
 
+        <button type="button" id="fractalTypesBtn" class="btn btn-default">
+            Type
+        </button>
+
         <button type="button" id="exportToPngBtn" class="btn btn-default">
             Export
         </button>
@@ -79,6 +83,23 @@
             <input id="updateFractalViewer" type="submit" value="Update" class="btn btn-default" />
             <br/>
         </form>
+
+        <div class="container" id="fractalTypes">
+            <div class="row">
+                <div class="col-xs-6">
+                    <a id="ft-mandelbrot" href="#" class="thumbnail">
+                        <img src="img/mandelbrot.png" alt="Mandelbrot" />
+                    </a>
+                    <p>Mandelbrot</p>
+                </div>
+                <div class="col-xs-6">
+                    <a id="ft-rcf" href="#" class="thumbnail">
+                        <img src="img/rozuvan_circles_fractal.png" alt="Rozuvan Circles Fractal" />
+                    </a>
+                    <p>Rozuvan Circles Fractal</p>
+                </div>
+            </div>
+        </div>
 
     </body>
 </html>

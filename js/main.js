@@ -7,19 +7,21 @@
       jquery: 'vendor/jquery/jquery.min',
       complex: 'vendor/complex-js/complex.min',
       bootstrap: 'vendor/bootstrap/bootstrap.min',
-      'bootstrap-dialog': 'vendor/bootstrap3-dialog/bootstrap-dialog.min'
+      'bootstrap-dialog': 'vendor/bootstrap3-dialog/bootstrap-dialog.min',
+      'fractal-types/mandelbrot': 'fractal-types/mandelbrot',
+      'fractal-types/rcf': 'fractal-types/rcf'
     },
     shim: {
-      'bootstrap': {
+      bootstrap: {
         deps: ['jquery']
       },
       'bootstrap-dialog': {
-        deps: ['jquery', 'bootstrap']
+        deps: ['bootstrap']
       }
     }
   });
 
-  require(['jquery', 'bootstrap', 'bootstrap-dialog'], function($) {
+  require(['jquery'], function($) {
     $.noConflict();
     $(document).ready(onDomReady);
   });

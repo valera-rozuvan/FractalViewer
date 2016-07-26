@@ -1,15 +1,21 @@
-#controlToggler {
+#controlToggler, #exportToPngBtn, #fractalTypesBtn {
     position: absolute;
-    top: 3px;
-    left: 3px;
+    visibility: hidden;
 }
 
-#exportToPngBtn {
-    position: absolute;
-    top: 3px;
-    left: 100px;
-}
-
-#controlsForm {
+#controlsForm, #fractalTypes {
     display: none;
+    width: 100%;
+}
+
+.controls-form-dialog .modal-dialog {
+    width: 250px;
+}
+
+.fractal-types-dialog .modal-dialog {
+    width: 300px;
+}
+
+#fractalTypes .row {
+	text-align: center;
 }
