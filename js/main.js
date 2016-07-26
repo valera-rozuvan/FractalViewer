@@ -1,6 +1,9 @@
 (function() {
   'use strict';
 
+  var $;
+  var loaderAnimationInterval;
+
   require.config({
     baseUrl: 'js',
     paths: {
@@ -21,16 +24,27 @@
     }
   });
 
-  require(['jquery'], function($) {
+  require(['jquery'], function(_$) {
+    $ = _$;
     $.noConflict();
     $(document).ready(onDomReady);
   });
 
+  function loaderAnimation() {
+    loaderAnimationInterval = window.setInterval(function() {
+      $('.loader-animation .center').append('.');
+    }, 75);
+  }
+
   function onDomReady() {
     console.log('DOM is ready.');
+    loaderAnimation();
 
     require(['FractalViewer', 'FractalRunner'], function(FractalViewer, FractalRunner) {
       console.log('Loaded modules FractalViewer, FractalRunner.');
+
+      window.clearInterval(loaderAnimationInterval);
+      $('.loader-animation').remove();
 
       FractalRunner.init(FractalViewer);
     });

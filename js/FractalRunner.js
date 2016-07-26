@@ -41,13 +41,31 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
 
     $('#fractalTypesBtn').css({
       top: Math.round(yDisp) + 'px',
-      left: Math.round(xDisp * 2.0 + $('#controlToggler').outerWidth()) + 'px',
+      left: Math.round(
+          xDisp * 2.0 +
+          $('#controlToggler').outerWidth()
+        ) + 'px',
       visibility: 'visible'
     });
 
     $('#exportToPngBtn').css({
       top: Math.round(yDisp) + 'px',
-      left: Math.round(xDisp * 3.0 + $('#controlToggler').outerWidth() + $('#fractalTypesBtn').outerWidth()) + 'px',
+      left: Math.round(
+          xDisp * 3.0 +
+          $('#controlToggler').outerWidth() +
+          $('#fractalTypesBtn').outerWidth()
+        ) + 'px',
+      visibility: 'visible'
+    });
+
+    $('#aboutDialogButton').css({
+      top: Math.round(yDisp) + 'px',
+      left: Math.round(
+          xDisp * 4.0 +
+          $('#controlToggler').outerWidth() +
+          $('#fractalTypesBtn').outerWidth() +
+          $('#exportToPngBtn').outerWidth()
+        ) + 'px',
       visibility: 'visible'
     });
   }
@@ -76,6 +94,7 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
       window.open(exportToPNG(), '_newtab');
       return false;
     });
+    $('#aboutDialogButton').on('click', toggleAboutDialog);
 
     canvas.onmousedown = function(e) {
       mouseX = e.pageX;
@@ -291,6 +310,34 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
       title: 'Fractal Type',
       cssClass: 'fractal-types-dialog',
       message: fractalTypesEl,
+      draggable: true,
+      closeByBackdrop: false,
+      closeByKeyboard: false,
+      buttons: [{
+        label: 'Close',
+        action: function(dialogRef) {
+          dialogRef.close();
+        }
+      }]
+    });
+
+    return false;
+  }
+
+  function toggleAboutDialog(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var aboutDialogEl = $('#aboutDialog').clone(false);
+
+    aboutDialogEl.css({
+      display: 'block'
+    });
+
+    BootstrapDialog.show({
+      title: 'About',
+      cssClass: 'fractal-types-dialog',
+      message: aboutDialogEl,
       draggable: true,
       closeByBackdrop: false,
       closeByKeyboard: false,
