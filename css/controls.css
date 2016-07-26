@@ -1,9 +1,9 @@
-#controlToggler, #exportToPngBtn, #fractalTypesBtn {
+#controlToggler, #exportToPngBtn, #fractalTypesBtn, #aboutDialogButton {
     position: absolute;
     visibility: hidden;
 }
 
-#controlsForm, #fractalTypes {
+#controlsForm, #fractalTypes, #aboutDialog {
     display: none;
     width: 100%;
 }
@@ -14,6 +14,10 @@
 
 .fractal-types-dialog .modal-dialog {
     width: 300px;
+}
+
+.about-dialog .modal-dialog {
+    width: 400px;
 }
 
 #fractalTypes .row {
@@ -35,3 +39,25 @@
     color: white;
     mix-blend-mode: difference;
 }
+
+.loader-animation {
+    background-color: #e8e8e8;
+    width: 100%;
+    height: auto;
+    bottom: 0px;
+    top: 0px;
+    left: 0;
+    position: absolute;
+}
+
+.loader-animation .center {
+    font-size: 2em;
+
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px; /* margin is -0.5 * dimension */
+    margin-top: -25px;
+}​
