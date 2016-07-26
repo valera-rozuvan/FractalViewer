@@ -17,5 +17,21 @@
 }
 
 #fractalTypes .row {
-	text-align: center;
+    text-align: center;
+}
+
+#copyright {
+    position: fixed;
+    right: 5px;
+    bottom: 5px;
+
+    font-size: 12px;
+    color: white;
+    mix-blend-mode: difference;
+}
+
+#copyright p, #copyright a {
+    font-size: 12px;
+    color: white;
+    mix-blend-mode: difference;
 }
