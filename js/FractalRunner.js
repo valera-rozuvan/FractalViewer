@@ -110,7 +110,7 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
       // Have a dummy HTML document which will load the image data URI and create an image
       // element based on that data.
 
-      window.open('static_image.html?q=' + exportToPNG());
+      window.open('static_image.html#img=' + exportToPNG());
 
       return false;
     });
