@@ -2,6 +2,11 @@
 
 An HTML5 based Mandelbrot fractal explorer
 
+## Live demo
+
+You can see the latest master code running via GitHub pages at
+[valera-rozuvan.github.io/FractalViewer](http://valera-rozuvan.github.io/FractalViewer/index.html).
+
 ## Initial development
 
 This project was forked from [qiemem/FractalViewer](https://github.com/qiemem/FractalViewer).
@@ -25,11 +30,6 @@ Right now FractalViewer is at version 1.x. The next major version with new
 features will be version 2.0
 [Follow along](https://github.com/valera-rozuvan/FractalViewer/issues?q=is%3Aopen+is%3Aissue+milestone%3Av2.0)
 the progress for next version.
-
-## Live demo
-
-You can see the latest master code running via GitHub pages at
-[http://valera-rozuvan.github.io/FractalViewer/FractalViewer.html](http://valera-rozuvan.github.io/FractalViewer/FractalViewer.html).
 
 ## License
 
