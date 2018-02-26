@@ -17,8 +17,8 @@
 <body>
   <script type="text/javascript">
     function setupImage() {
-      if (window.location.search.indexOf('?q=data:image/png;base64') == 0) {
-        var content = window.location.search.substring(3);
+      if (window.location.hash.indexOf('#img=data:image/png;base64') == 0) {
+        var content = window.location.hash.substring(5);
 
         var image = new Image();
         image.src = content;
