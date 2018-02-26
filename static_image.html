@@ -1,0 +1,40 @@
+<html>
+<head>
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <script type="text/javascript">
+    function setupImage() {
+      if (window.location.search.indexOf('?q=data:image/png;base64') == 0) {
+        var content = window.location.search.substring(3);
+
+        var image = new Image();
+        image.src = content;
+        document.body.appendChild(image);
+      }
+    }
+
+    // Taken from: https://gist.github.com/dciccale/4087856 .
+    var DOMReady = function (a, b, c) {
+      b = document, c = 'addEventListener';
+      b[c] ? b[c]('DOMContentLoaded', a) : window.attachEvent('onload', a);
+    };
+
+    DOMReady(function () {
+      setupImage();
+    });
+  </script>
+</body>
+</html>
