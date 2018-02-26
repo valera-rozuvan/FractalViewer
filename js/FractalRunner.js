@@ -91,7 +91,27 @@ define('FractalRunner', ['bootstrap-dialog', 'jquery'], function(BootstrapDialog
     $('#controlToggler').on('click', toggleControlsForm);
     $('#fractalTypesBtn').on('click', toggleFractalTypesDialog);
     $('#exportToPngBtn').on('click', function() {
-      window.open(exportToPNG(), '_newtab');
+      // window.open(exportToPNG(), '_newtab');
+
+      // We can't simply open a new blank window with the image.
+      // Apparently Google Chrome has removed support for top-frame
+      // navigation, you can see more informations here:
+      // https://groups.google.com/a/chromium.org/forum/#!topic/blink-dev/GbVcuwg_QjM
+
+      // So, to get around this problem, we open a new window, and inside it create
+      // an IFrame with our image.
+
+      // var win = window.open();
+      // win.document.write(
+      //   '<iframe src="' + exportToPNG() + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
+      // );
+
+      // Update #2. The above fix doesn't work in Chrome anymore. New fix!
+      // Have a dummy HTML document which will load the image data URI and create an image
+      // element based on that data.
+
+      window.open('static_image.html?q=' + exportToPNG());
+
       return false;
     });
     $('#aboutDialogButton').on('click', toggleAboutDialog);
