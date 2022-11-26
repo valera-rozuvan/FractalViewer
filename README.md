@@ -1,6 +1,6 @@
 # FractalViewer
 
-An HTML5 based Mandelbrot fractal explorer
+an HTML5 based Mandelbrot fractal explorer
 
 ## Live demo
 
@@ -31,7 +31,22 @@ features will be version 2.0
 [Follow along](https://github.com/valera-rozuvan/FractalViewer/issues?q=is%3Aopen+is%3Aissue+milestone%3Av2.0)
 the progress for next version.
 
-## License
+---
 
-The project is licensed under The MIT License (MIT). See [LICENSE](LICENSE) for
-more details.
+## license
+
+The project `'FractalViewer'` is licensed under the MIT License.
+
+See [LICENSE](./LICENSE) for more details.
+
+The latest source code can be retrieved from one of several mirrors:
+
+1. [github.com/valera-rozuvan/FractalViewer](https://github.com/valera-rozuvan/FractalViewer)
+
+2. [gitlab.com/valera-rozuvan/FractalViewer](https://gitlab.com/valera-rozuvan/FractalViewer)
+
+3. [git.rozuvan.net/FractalViewer](https://git.rozuvan.net/FractalViewer)
+
+Copyright (c) 2016-2022 [Valera Rozuvan](https://valera.rozuvan.net/)
+
+Copyright (c) 2011-2016 [Bryan Head](https://github.com/qiemem)
