@@ -24,6 +24,7 @@
     }
   });
 
+  // TODO: Remove require.js completely. Native imports are available at this time.
   require(['jquery'], function(_$) {
     $ = _$;
     $.noConflict();
