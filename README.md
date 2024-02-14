@@ -1,6 +1,10 @@
 # FractalViewer
 
-an HTML5 based Mandelbrot fractal explorer
+view fractals in your browser
+
+## update
+
+WIP to rework the whole thing to React. Check progress in [FractalViewer/issues/1](https://github.com/valera-rozuvan/FractalViewer/issues/1).
 
 ## Live demo
 
